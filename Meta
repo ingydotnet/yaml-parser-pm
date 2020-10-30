@@ -1,0 +1,29 @@
+=meta: 0.0.2
+
+name: YAML-Parser
+version: 0.0.1
+abstract: Generated Reference Parser for YAML 1.2
+homepage:
+- http://yaml.org
+language: perl
+license: perl
+copyright: 2020
+
+author:
+  name: Ingy döt Net
+  email: ingy@cpan.org
+  homepage: http://ingy.net
+  github: ingydotnet
+  twitter: ingydotnet
+  freenode: ingy
+
+devel:
+  git: https://github.com/ingydotnet/yaml-parser-pm
+  bug: https://github.com/ingydotnet/yaml-parser-pm/issues
+  irc: irc.freenode.net#yaml
+
+requires:
+  perl: 5.12
+
+# =zild:
+#   include_testml: 1

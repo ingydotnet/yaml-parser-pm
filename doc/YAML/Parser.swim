@@ -1,0 +1,25 @@
+<<<cpan-head>>>
+
+= Synopsis
+
+  my @events = YAML::Parser->new->parse($yaml_string)->events;
+
+or
+
+  YAML::Parser->new(
+    receiver => sub { my ($event) = @_; ... },
+  )->parse($yaml_string);
+
+= Description
+
+YAML::Parser is the first 100% YAML 1.2 spec compliant parser for Perl.
+The Perl code is generated directly from the YAML 1.2 specification.
+
+= See
+
+* https://github.com/yaml/yaml-reference-parser/tree/master#readme
+* https://github.com/yaml/yaml-grammar/blob/master/yaml-spec-1.2.yaml
+* https://yaml.org/spec/1.2/spec.html#id2770814
+* https://github.com/yaml/yaml-test-suite/tree/master/test
+
+<<<cpan-tail>>>
