@@ -1,6 +1,8 @@
 use v5.12;
 package YAML::Parser;
 
+our $VERSION = '0.0.1';
+
 sub new {
   my ($class, %self) = @_;
   my $self = bless {

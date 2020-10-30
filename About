@@ -57,19 +57,21 @@ Repository Layout
 
 This repoository contains the following top level files and directories:
 
+  About       - This file describing the repository. (generated)
   Changes     - Change log file in YAML.
   Meta        - All metadata for the project.
   ReadMe.pod  - Top level ReadMe file for GitHub. (generated)
+  .travis.yml - Travis CI test control file. (generated)
 
   bin/        - Directory of installable scripts.
   doc/        - Documentation directory.
+  .git/       - Git repository data.
   lib/        - All the source code libraries (modules).
-  share/      - Shared files for the release package.
 
 Resources
 ---------
 
-  Home Page   - ARRAY(0x55dc34598330)
+  Home Page   - ARRAY(0x564264c0cf88)
   Source      - https://github.com/ingydotnet/yaml-parser-pm
   Release     - https://metacpan.org/release/YAML-Parser
   Bugs        - https://github.com/ingydotnet/yaml-parser-pm/issues
