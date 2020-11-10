@@ -1,30 +1,46 @@
+# This module was GENERATED!
+#
+# By https://github.com/ingydotnet/yaml-parser-pm
+
 use v5.12;
 package YAML::Parser;
 
 our $VERSION = '0.0.1';
 
+use XXX;
+
 sub new {
   my ($class, %self) = @_;
+
   my $self = bless {
     %self,
-    events => [],
   }, $class;
-  $self->{receiver} //= sub {
-    my ($event) = @_;
-    push @{$self->{events}}, $event;
-  };
+
+  if (not defined $self->{receiver}) {
+    $self->{events} = [];
+    $self->{receiver} = PerlYamlReferenceParserReceiver->new(
+      callback => sub {
+        my ($event) = @_;
+        push @{$self->{events}}, $event;
+      },
+    );
+  }
 
   return $self;
 }
 
 sub parse {
   my ($self, $yaml_string) = @_;
-  my $receiver = PerlYamlReferenceParserReceiver->new(
-    callback => $self->{receiver},
+  $self->{parser} = PerlYamlReferenceParserParser->new(
+    $self->{receiver},
   );
-  my $parser = PerlYamlReferenceParserParser->new($receiver);
-  $parser->parse($yaml_string);
+  $self->{parser}->parse($yaml_string);
   return $self;
+}
+
+sub receiver {
+  my ($self) = @_;
+  return $self->{parser}{receiver};
 }
 
 sub events {
@@ -43,6 +59,7 @@ BEGIN {
 ### INCLUDE code from yaml-reference-parser/perl/lib/
 
 BEGIN {
+
 use v5.12;
 
 package PerlYamlReferenceParserFunc;
@@ -3968,6 +3985,7 @@ rule '211', l_yaml_stream => sub {
 
 1;
 
+
 ###
 # This is a parser class. It has a parse() method and parsing primitives for
 # the grammar. It calls methods in the receiver class, when a rule matches:
@@ -3983,6 +4001,8 @@ use PerlYamlReferenceParserGrammar;
 use base 'PerlYamlReferenceParserGrammar';
 
 use constant TRACE => $ENV{TRACE};
+
+sub receiver { $_[0]->{receiver} }
 
 sub new {
   my ($class, $receiver) = @_;
@@ -4535,10 +4555,14 @@ name 'auto_detect_indent', \&auto_detect_indent;
 
 sub auto_detect {
   my ($self, $n) = @_;
-  substr($self->{input}, $self->{pos}) =~ /^.*\n(?:\ *\n)*(\ *)/
+  substr($self->{input}, $self->{pos}) =~ /^.*\n((?:\ *\n)*)(\ *)/
     or return 1;
-  my $m = length($1) - $n;
+  my $pre = $1;
+  my $m = length($2) - $n;
   $m = 1 if $m < 1;
+  # XXX change 'die' to 'error' for reporting parse errors
+  die "Spaces found after indent in auto-detect (5LLU)"
+    if $pre =~ /^.{$m}./m;
   return $m;
 }
 name 'auto_detect', \&auto_detect;
@@ -4685,7 +4709,7 @@ sub stream_end_event {
   { event => 'stream_end' };
 }
 sub document_start_event {
-  { event => 'document_start', explicit => (shift || false) };
+  { event => 'document_start', explicit => (shift || false), version => undef };
 }
 sub document_end_event {
   { event => 'document_end', explicit => (shift || false) };
@@ -4800,6 +4824,7 @@ sub check_document_end {
   return unless $self->{document_end};
   $self->send($self->{document_end});
   delete $self->{document_end};
+  $self->{tag_map} = {};
   $self->{document_start} = document_start_event;
 }
 
@@ -4815,6 +4840,13 @@ sub got__l_yaml_stream {
   my ($self) = @_;
   $self->check_document_end;
   $self->add(stream_end_event);
+}
+
+sub got__ns_yaml_version {
+  my ($self, $o) = @_;
+  die "Multiple %YAML directives not allowed"
+    if defined $self->{document_start}{version};
+  $self->{document_start}{version} = $o->{text};
 }
 
 sub got__c_tag_handle {
@@ -5028,11 +5060,14 @@ sub got__c_ns_tag_property {
       $self->{tag} = "tag:yaml.org,2002:$1";
     }
   }
-  elsif (
-    $tag =~ /^(!.*?!)/ and
-    defined($prefix = $self->{tag_map}{$1})
-  ) {
-    $self->{tag} = $prefix . substr($tag, length($1));
+  elsif ($tag =~ /^(!.*?!)/) {
+    $prefix = $self->{tag_map}{$1};
+    if (defined $prefix) {
+      $self->{tag} = $prefix . substr($tag, length($1));
+    }
+    else {
+      die "No %TAG entry for '$prefix'";
+    }
   }
   elsif (defined($prefix = $self->{tag_map}{'!'})) {
     $self->{tag} = $prefix . substr($tag, 1);

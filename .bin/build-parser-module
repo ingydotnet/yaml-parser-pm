@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+set -e -u -o pipefail
+
+repo=$1
+
+version=$(grep '^version' Meta | head -n1 | cut -d' ' -f2)
+
+read -r -d '' module <<'...' || true
+# This module was GENERATED!
+#
+# By https://github.com/ingydotnet/yaml-parser-pm
+
+use v5.12;
+package YAML::Parser;
+
+our $VERSION = '0.0.1';
+
+use XXX;
+
+sub new {
+  my ($class, %self) = @_;
+
+  my $self = bless {
+    %self,
+  }, $class;
+
+  if (not defined $self->{receiver}) {
+    $self->{events} = [];
+    $self->{receiver} = PerlYamlReferenceParserReceiver->new(
+      callback => sub {
+        my ($event) = @_;
+        push @{$self->{events}}, $event;
+      },
+    );
+  }
+
+  return $self;
+}
+
+sub parse {
+  my ($self, $yaml_string) = @_;
+  $self->{parser} = PerlYamlReferenceParserParser->new(
+    $self->{receiver},
+  );
+  $self->{parser}->parse($yaml_string);
+  return $self;
+}
+
+sub receiver {
+  my ($self) = @_;
+  return $self->{parser}{receiver};
+}
+
+sub events {
+  my ($self) = @_;
+  return @{$self->{events}};
+}
+
+BEGIN {
+  $INC{'PerlYamlReferenceParserParser.pm'} = __FILE__;
+  $INC{'PerlYamlReferenceParserGrammar.pm'} = __FILE__;
+  $INC{'PerlYamlReferenceParserPrelude.pm'} = __FILE__;
+};
+
+1;
+
+### INCLUDE code from yaml-reference-parser/perl/lib/
+
+BEGIN {
+...
+
+module=${module/==VERSION==/$version}
+
+prelude=$(< "$repo/perl/lib/Prelude.pm")
+module+=$'\n'$'\n'$prelude$'\n''}'
+
+grammar=$(< "$repo/perl/lib/Grammar.pm")
+module+=$'\n'$'\n'$'\n'$grammar
+
+parser=$(< "$repo/perl/lib/Parser.pm")
+module+=$'\n'$'\n'$'\n'$parser
+
+receiver=$(< "$repo/perl/lib/Receiver.pm")
+module+=$'\n'$'\n'$'\n'$receiver
+
+test_receiver=$(< "$repo/perl/lib/TestReceiver.pm")
+module+=$'\n'$'\n'$'\n'$test_receiver
+
+module=${module//\ Parser/\ PerlYamlReferenceParserParser}
+module=${module//\ Grammar/\ PerlYamlReferenceParserGrammar}
+module=${module//\'Grammar/\'PerlYamlReferenceParserGrammar}
+module=${module//\ Prelude/\ PerlYamlReferenceParserPrelude}
+module=${module//\ TestReceiver/\ PerlYamlReferenceParserTestReceiver}
+module=${module//\ Receiver/\ PerlYamlReferenceParserReceiver}
+module=${module//\'Receiver/\'PerlYamlReferenceParserReceiver}
+module=${module//\ Func/\ PerlYamlReferenceParserFunc}
+module=${module//\'Func/\'PerlYamlReferenceParserFunc}
+
+
+echo "$module"
+echo

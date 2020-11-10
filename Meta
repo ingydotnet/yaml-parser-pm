@@ -24,6 +24,10 @@ devel:
 
 requires:
   perl: 5.12
+  boolean: 0.46
+  YAML::PP: 0.026
+  JSON::PP: 4.05
+  XXX: 0.35
 
 # =zild:
 #   include_testml: 1
