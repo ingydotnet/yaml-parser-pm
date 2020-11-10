@@ -59,6 +59,7 @@ This repoository contains the following top level files and directories:
 
   About       - This file describing the repository. (generated)
   Changes     - Change log file in YAML.
+  .gitignore  - Git's ignore file.
   Meta        - All metadata for the project.
   ReadMe.pod  - Top level ReadMe file for GitHub. (generated)
   .travis.yml - Travis CI test control file. (generated)
@@ -71,7 +72,7 @@ This repoository contains the following top level files and directories:
 Resources
 ---------
 
-  Home Page   - ARRAY(0x564264c0cf88)
+  Home Page   - ARRAY(0x555f7e429078)
   Source      - https://github.com/ingydotnet/yaml-parser-pm
   Release     - https://metacpan.org/release/YAML-Parser
   Bugs        - https://github.com/ingydotnet/yaml-parser-pm/issues

@@ -5,7 +5,7 @@
 use v5.12;
 package YAML::Parser;
 
-our $VERSION = '0.0.1';
+our $VERSION = '0.0.2';
 
 use XXX;
 

@@ -33,6 +33,10 @@ before_install:
 
 install:
 - cpan-install --coverage
+  boolean~0.46
+  JSON::PP~4.05
+  XXX~0.35
+  YAML::PP~0.026
 
 before_script:
   coverage-setup

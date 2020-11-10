@@ -14,7 +14,7 @@ read -r -d '' module <<'...' || true
 use v5.12;
 package YAML::Parser;
 
-our $VERSION = '0.0.1';
+our $VERSION = '==VERSION==';
 
 use XXX;
 
