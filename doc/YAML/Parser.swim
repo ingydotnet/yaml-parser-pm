@@ -2,13 +2,17 @@
 
 = Synopsis
 
+To get a set of event objects:
+
   my @events = YAML::Parser->new->parse($yaml_string)->events;
 
-or
+To get the yaml-test-suite event output string:
 
-  YAML::Parser->new(
-    receiver => sub { my ($event) = @_; ... },
-  )->parse($yaml_string);
+  my $receiver = PerlYamlReferenceParserTestReceiver->new;
+  my $output = YAML::Parser->new(receiver => $receiver)
+   ->parse($yaml_string)
+   ->receiver
+   ->output;
 
 = Description
 
