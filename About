@@ -7,7 +7,7 @@ This repository contains the source code for the Perl 5 module distribution:
 
     by Ingy döt Net
 
-  Copyright 2020. Ingy döt Net.
+  Copyright 2020-2021. Ingy döt Net.
 
 License
 -------
@@ -72,7 +72,7 @@ This repoository contains the following top level files and directories:
 Resources
 ---------
 
-  Home Page   - ARRAY(0x55d574dc99b8)
+  Home Page   - ARRAY(0x55a439bd1e38)
   Source      - https://github.com/ingydotnet/yaml-parser-pm
   Release     - https://metacpan.org/release/YAML-Parser
   Bugs        - https://github.com/ingydotnet/yaml-parser-pm/issues
